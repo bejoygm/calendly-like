@@ -1,0 +1,26 @@
+services:
+  database:
+    image: postgres:15-alpine
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+    volumes:
+      - database-data:/var/lib/postgresql/data
+
+  # api:
+  #   build: .
+  #   ports:
+  #     - 8000:8000
+  #     - 5678:5678
+  #   depends_on:
+  #     - database
+  #   environment:
+  #     DB_URL: "postgresql+psycopg://dev-user:password@database:5432/dev_db"
+      
+
+volumes:
+  database-data:

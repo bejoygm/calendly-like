@@ -8,9 +8,6 @@ from app.schedule.domain.schemas.availability import (
     SetAvailabilitySchema,
 )
 from app.user.data.repos.user import UserRepoImpl
-from app.user.domain.models.user import User
-from app.user.domain.schemas.user import CreateUserSchema, GetUserSchema
-from app.user.domain.usecase.create_user import CreateUserUsecase
 from app.main import app
 
 

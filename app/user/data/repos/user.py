@@ -2,7 +2,7 @@ from typing import Optional, Sequence
 import uuid
 
 from pydantic import EmailStr
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.user.domain.models.user import User
 from app.user.domain.repos.user import UserRepo
@@ -10,7 +10,7 @@ from app.user.data.models.user import UserModel
 
 
 class UserRepoImpl(UserRepo):
-    def __init__(self, session: Session):
+    def __init__(self, session: AsyncSession):
         self.session = session
 
     def insert(self, user: User) -> User:

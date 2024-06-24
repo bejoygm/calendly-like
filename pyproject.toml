@@ -1,9 +1,10 @@
 [tool.poetry]
-name = "calendly-like"
+name = "fastapi-template"
 version = "0.1.0"
-description = ""
-authors = ["Bejoy Mathew <bejoygm@gmail.com>"]
+description = "A template for kickstarting new FastAPI projects"
+authors = ["zhanymkanov"]
 readme = "README.md"
+license = "UNLICENSED"
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -17,11 +18,17 @@ asyncpg = "^0.29.0"
 uvicorn = {extras = ["standard"], version = "^0.30.1"}
 sentry-sdk = "^2.5.1"
 sqlalchemy = {extras = ["asyncio"], version = "^2.0.30"}
+mypy = "^1.10.0"
 pytest = "^8.2.2"
-
+aiosqlite = "^0.20.0"
 
 [tool.poetry.group.dev.dependencies]
-mypy = "^1.10.0"
+ruff = "^0.4.8"
+
+[tool.poetry.group.prod.dependencies]
+gunicorn = "^22.0.0"
+python-json-logger = "^2.0.7"
+prometheus-client = "^0.20.0"
 
 [build-system]
 requires = ["poetry-core"]

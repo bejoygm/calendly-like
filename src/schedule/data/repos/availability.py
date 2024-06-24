@@ -15,16 +15,18 @@ class AvailabilityRepoImpl(AvailabilityRepo):
     def insert(self, obj: Availability) -> Availability:
         record = AvailabilityModel(**obj.model_dump())
         record.id = str(record.id)
-        record.rules
         record.user_id = str(record.user_id)
         self.session.add(record)
         return Availability(**record.dict())
 
     def get(self, id: UUID) -> Optional[Availability]:
-        return (
+        availability = (
             self.session.query(AvailabilityModel)
             .filter(
                 AvailabilityModel.id == str(id),
             )
             .first()
         )
+        if availability:
+            return Availability(**availability.dict())
+        return None

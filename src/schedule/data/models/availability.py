@@ -12,6 +12,7 @@ class AvailabilityModel(Base):
     __tablename__ = "availability"
 
     id: Mapped[str] = mapped_column(primary_key=True, default=generate_uuid)
+    name: Mapped[str] = mapped_column(nullable=False)
     user_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
     rules: Mapped[dict[str, Any]] = mapped_column(nullable=False)
     timezone: Mapped[str] = mapped_column(nullable=False)
@@ -26,6 +27,7 @@ class AvailabilityModel(Base):
     def dict(self):
         return {
             "id": self.id,
+            "name": self.name,
             "user_id": self.user_id,
             "rules": self.rules,
             "timezone": self.timezone,

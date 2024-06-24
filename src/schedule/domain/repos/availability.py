@@ -7,7 +7,7 @@ from src.schedule.domain.models.availability import Availability
 
 class AvailabilityRepo(ABC):
     @abstractmethod
-    def insert(self, obj: Availability) -> Optional[Availability]:
+    def insert(self, obj: Availability) -> Availability:
         pass
 
     @abstractmethod

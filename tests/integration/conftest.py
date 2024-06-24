@@ -6,8 +6,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from src.database import Base, get_db_session
-from src.user.data.models.user import User
 from src.main import app
+from tests.integration.user.fixtures import *
 
 # create objects in memory for fast tests
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
@@ -24,9 +24,9 @@ def override_get_db():
     try:
         db = TestingSessionLocal()
         yield db
-    finally:
-        print("here")
+        # commit for the values to persist in same default scope = 'function'
         db.commit()
+    finally:
         db.close()
 
 
@@ -40,8 +40,7 @@ def actual_app():
 
 
 # recreate tables after each test runs
-# this is a little; but ensures data isn't persisted across tests
-# A better way should exist
+# this is little slow; but ensures data isn't persisted across tests
 @pytest.fixture
 def client(actual_app):
     with TestClient(app) as c:

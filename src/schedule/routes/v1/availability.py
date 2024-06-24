@@ -1,12 +1,15 @@
+from uuid import UUID
 from fastapi import APIRouter, Response, status
 
 from src.database import DBSessionDep
 from src.schedule.data.repos.availability import AvailabilityRepoImpl
 from src.schedule.domain.models.availability import Availability
 from src.schedule.domain.schemas.availability import (
-    SetAvailabilityResponseSchema,
-    SetAvailabilitySchema,
+    AvailabilityRequestSchema,
+    AvailabilityResponseSchema,
 )
+from src.schedule.domain.usecase.create_availablility import CreateAvailabilityUsecase
+from src.schedule.routes.v1.exceptions import AvailabilityNotFound, UserNotFound
 from src.user.data.repos.user import UserRepoImpl
 
 router = APIRouter(
@@ -15,28 +18,41 @@ router = APIRouter(
 )
 
 
-@router.put(
+@router.post(
     "",
     status_code=status.HTTP_201_CREATED,
-    response_model=SetAvailabilityResponseSchema,
+    response_model=AvailabilityResponseSchema,
 )
-def set_availability(
-    payload: SetAvailabilitySchema,
+def create_availability(
+    payload: AvailabilityRequestSchema,
     db_session: DBSessionDep,
-    response: Response,
 ):
-    repo = AvailabilityRepoImpl(db_session)
     user_repo = UserRepoImpl(db_session)
-    # usecase = SetAvailabilityUsecase(repo)
-
     user = user_repo.get_by_email(payload.email)
 
-    # Todo: handle the user not present case
-    # Todo: send appropriate response if avail already exists
+    if not user:
+        raise UserNotFound
 
-    if user:
-        obj = Availability(user_id=user.id, **payload.model_dump(by_alias=True))
-        availability = repo.insert(obj)
-        return_payload = availability.model_dump()
+    repo = AvailabilityRepoImpl(db_session)
+    usecase = CreateAvailabilityUsecase(availability_repo=repo)
+    obj = Availability(user_id=user.id, **payload.model_dump(by_alias=True))
+    availability = usecase.execute(obj)
 
-    return return_payload
+    return availability.model_dump()
+
+
+@router.get(
+    "/{availability_id}",
+    response_model=AvailabilityResponseSchema,
+)
+def get_availability(
+    availability_id: UUID,
+    db_session: DBSessionDep,
+):
+    repo = AvailabilityRepoImpl(db_session)
+    availability = repo.get(availability_id)
+
+    if not availability:
+        raise AvailabilityNotFound
+
+    return availability.model_dump()

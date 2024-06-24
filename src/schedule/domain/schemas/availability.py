@@ -68,7 +68,8 @@ class Duration(BaseModel):
     )
 
 
-class SetAvailabilitySchema(BaseModel):
+class AvailabilityRequestSchema(BaseModel):
+    name: str
     rules: List[Duration]
     timezone: Timezone
     email: EmailStr
@@ -77,14 +78,14 @@ class SetAvailabilitySchema(BaseModel):
         use_enum_values=True,
     )
 
-    # todo: handle conflicting intervals
     @field_validator("rules")
     def validate_intervals(cls, v):
         return v
 
 
-class SetAvailabilityResponseSchema(BaseModel):
+class AvailabilityResponseSchema(BaseModel):
     id: UUID
+    name: str
     user_id: UUID
     rules: List[Duration]
     timezone: Timezone

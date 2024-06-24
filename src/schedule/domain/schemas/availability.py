@@ -1,10 +1,18 @@
+import zoneinfo
 from datetime import time
 from enum import Enum
-import zoneinfo
-from pydantic import BaseModel, EmailStr, ConfigDict, Field, field_serializer
-from pydantic_core.core_schema import FieldValidationInfo
-from uuid import UUID
 from typing import List
+from uuid import UUID
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    EmailStr,
+    Field,
+    field_serializer,
+    field_validator,
+)
+from pydantic_core.core_schema import FieldValidationInfo
 
 all_zones = zoneinfo.available_timezones()
 tz_dict: dict = {}
@@ -23,10 +31,6 @@ class Day(str, Enum):
     thu = "thu"
     fri = "fri"
     sat = "sat"
-
-
-from pydantic import BaseModel, field_validator
-from typing import Optional
 
 
 class Interval(BaseModel):

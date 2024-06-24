@@ -1,7 +1,4 @@
-from sqlalchemy.orm import Session
-
 from src.schedule.domain.repos.availability import AvailabilityRepo
-from src.user.domain.models.user import User
 
 
 class CreateScheduleUsecase:

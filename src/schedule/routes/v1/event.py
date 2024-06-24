@@ -1,26 +1,31 @@
 from datetime import date
 from uuid import UUID
-from fastapi import status
+
+from fastapi import APIRouter, status
 
 from src.database import DBSessionDep
 from src.schedule.data.repos.availability import AvailabilityRepoImpl
 from src.schedule.data.repos.event import EventRepoImpl
+from src.schedule.domain.models.event import Event
 from src.schedule.domain.schemas.event import (
     CreateEventResponseSchema,
     CreateEventSchema,
     GetEventCalendar,
 )
-from src.schedule.domain.models.event import Event
-from src.main import app
 from src.schedule.domain.usecase.get_calendar import CreateCalenderUsecase
 
+router = APIRouter(
+    prefix="/events",
+    tags=["events"],
+)
 
-@app.post(
-    "/event",
+
+@router.post(
+    "",
     status_code=status.HTTP_201_CREATED,
     response_model=CreateEventResponseSchema,
 )
-def set_availability(
+def create_event(
     payload: CreateEventSchema,
     db_session: DBSessionDep,
 ):
@@ -31,8 +36,8 @@ def set_availability(
     return return_payload
 
 
-@app.get(
-    "/get/{event_id}/calendar",
+@router.get(
+    "/{event_id}/calendar",
     response_model=GetEventCalendar,
 )
 def get_event_calendar(

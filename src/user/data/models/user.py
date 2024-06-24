@@ -1,8 +1,9 @@
 from datetime import datetime
-from src.utils import generate_uuid
-from src.database import Base
 
 from sqlalchemy.orm import Mapped, mapped_column
+
+from src.database import Base
+from src.utils import generate_uuid
 
 
 class User(Base):

@@ -1,9 +1,10 @@
-from src.utils import generate_uuid
-from src.database import Base
-from datetime import datetime, timezone, date
+from datetime import date, datetime, timezone
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
+
+from src.database import Base
+from src.utils import generate_uuid
 
 
 class EventModel(Base):

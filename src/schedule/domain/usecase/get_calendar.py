@@ -1,7 +1,7 @@
 from datetime import date, datetime, timedelta
 from typing import List
-from zoneinfo import ZoneInfo
 from uuid import UUID
+from zoneinfo import ZoneInfo
 
 from src.schedule.domain.models.event import SpotAvailability
 from src.schedule.domain.repos.availability import AvailabilityRepo
@@ -57,7 +57,6 @@ class CreateCalenderUsecase:
 
         calendar = []
         for dt in date_list:
-
             day_name = dt.strftime("%a").lower()
             intervals = availability_by_day.get(day_name, [])
 

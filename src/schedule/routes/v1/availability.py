@@ -1,4 +1,4 @@
-from fastapi import Response, status
+from fastapi import APIRouter, Response, status
 
 from src.database import DBSessionDep
 from src.schedule.data.repos.availability import AvailabilityRepoImpl
@@ -8,11 +8,15 @@ from src.schedule.domain.schemas.availability import (
     SetAvailabilitySchema,
 )
 from src.user.data.repos.user import UserRepoImpl
-from src.main import app
+
+router = APIRouter(
+    prefix="/availability",
+    tags=["availability"],
+)
 
 
-@app.put(
-    "/availability",
+@router.put(
+    "",
     status_code=status.HTTP_201_CREATED,
     response_model=SetAvailabilityResponseSchema,
 )

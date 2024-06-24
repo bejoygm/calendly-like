@@ -1,20 +1,16 @@
-from contextlib import asynccontextmanager
-from typing import AsyncGenerator
-
 import sentry_sdk
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from src.config import app_configs, settings
-
+from src.schedule.routes.v1 import availability, event, schedule
+from src.user.routes.v1 import user
 
 app = FastAPI(**app_configs)
-
-# import all routes here
-from src.user.routes.v1 import user
-from src.schedule.routes.v1 import availability, event, schedule
-
-###########
+app.include_router(user.router)
+app.include_router(availability.router)
+app.include_router(event.router)
+app.include_router(schedule.router)
 
 app.add_middleware(
     CORSMiddleware,

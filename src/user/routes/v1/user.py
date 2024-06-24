@@ -1,17 +1,22 @@
-from fastapi import status
 from uuid import UUID
 
-from src.main import app
+from fastapi import APIRouter, status
+
+from src.database import DBSessionDep
 from src.user.data.repos.user import UserRepoImpl
 from src.user.domain.models.user import User
 from src.user.domain.schemas.user import CreateUserSchema, GetUserSchema
 from src.user.domain.usecase.create_user import CreateUserUsecase
-from src.database import DBSessionDep
 from src.user.routes.v1.exceptions import UserNotFound
 
+router = APIRouter(
+    prefix="/users",
+    tags=["users"],
+)
 
-@app.post(
-    "/users",
+
+@router.post(
+    "",
     status_code=status.HTTP_201_CREATED,
     response_model=GetUserSchema,
 )
@@ -26,8 +31,8 @@ def create_user(
     return return_payload
 
 
-@app.get(
-    "/users/{user_id}",
+@router.get(
+    "/{user_id}",
     response_model=GetUserSchema,
 )
 def get_user(

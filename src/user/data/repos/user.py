@@ -2,11 +2,11 @@ from typing import Optional
 from uuid import UUID
 
 from pydantic import EmailStr
-
 from sqlalchemy.orm import Session
+
+from src.user.data.models.user import User as UserModel
 from src.user.domain.models.user import User
 from src.user.domain.repos.user import UserRepo
-from src.user.data.models.user import User as UserModel
 
 
 class UserRepoImpl(UserRepo):

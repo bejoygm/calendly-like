@@ -1,7 +1,7 @@
-from typing import List
 import uuid
+from typing import List
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 
 
 class Schedule(BaseModel):

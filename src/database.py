@@ -1,6 +1,6 @@
 import contextlib
-import sys
-from typing import Any, Annotated, Iterator
+from typing import Annotated, Any, Iterator
+
 from fastapi import Depends
 from sqlalchemy import (
     JSON,
@@ -15,8 +15,6 @@ from src.constants import DB_NAMING_CONVENTION
 
 DATABASE_URL = str(settings.DATABASE_URL)
 
-print(DATABASE_URL)
-
 metadata = MetaData(naming_convention=DB_NAMING_CONVENTION)
 
 
@@ -27,7 +25,7 @@ class Base(DeclarativeBase):
 
 class DatabaseSessionManager:
     def __init__(self, host: str, engine_kwargs: dict[str, Any] = {}):
-        self._engine = engine = create_engine(
+        self._engine = create_engine(
             DATABASE_URL,
             pool_size=settings.DATABASE_POOL_SIZE,
             pool_recycle=settings.DATABASE_POOL_TTL,

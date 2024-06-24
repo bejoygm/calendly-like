@@ -1,6 +1,6 @@
+import uuid
 from datetime import date
 from enum import Enum
-import uuid
 
 from pydantic import BaseModel, Field
 

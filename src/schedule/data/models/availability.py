@@ -1,9 +1,11 @@
 from datetime import datetime, timezone
 from typing import Any
-from src.utils import generate_uuid
-from src.database import Base
-from sqlalchemy import JSON, ForeignKey
+
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
+
+from src.database import Base
+from src.utils import generate_uuid
 
 
 class AvailabilityModel(Base):

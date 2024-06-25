@@ -12,7 +12,7 @@ class CreateEventSchema(BaseModel):
     name: str
     starts_from: date
     ends_at: date
-    duration: int = Field(..., ge=5)
+    duration: int = Field(..., ge=15)  # can make this configurable later on
     availability_id: UUID
 
     @field_validator("ends_at")
@@ -34,7 +34,7 @@ class Spots(BaseModel):
 
 
 class DayAvailability(BaseModel):
-    date: datetime
+    date: date
     spots: List[Spots]
 
 

@@ -21,6 +21,7 @@ sqlalchemy = {extras = ["asyncio"], version = "^2.0.30"}
 mypy = "^1.10.0"
 pytest = "^8.2.2"
 aiosqlite = "^0.20.0"
+datetimerange = "^2.3.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.8"

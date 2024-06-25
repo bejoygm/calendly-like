@@ -34,22 +34,53 @@ class CreateCalenderUsecase:
         if not availability:
             raise AssertionError
 
-        tzinfo = ZoneInfo(availability.timezone)
+        # convert the start_date, end_date to the timezone of the event
+        # find the intersection between events window and query window
+        # then generate all durations
+        # then convert back to users timezone
 
-        start = datetime(
+        event_tzinfo = ZoneInfo(availability.timezone)
+        query_tzinfo = ZoneInfo(timezone)
+
+        query_start = datetime(
             year=start_date.year,
             month=start_date.month,
             day=start_date.day,
-            tzinfo=tzinfo,
+            tzinfo=event_tzinfo,
         )
-        end = datetime(
+        query_end = datetime(
             year=end_date.year,
             month=end_date.month,
             day=end_date.day,
-            tzinfo=tzinfo,
+            tzinfo=event_tzinfo,
         )
 
-        num_days = (end - start).days
+        event_start = datetime(
+            year=event.starts_from.year,
+            month=event.starts_from.month,
+            day=event.starts_from.day,
+            tzinfo=event_tzinfo,
+        )
+
+        event_end = datetime(
+            year=event.ends_at.year,
+            month=event.ends_at.month,
+            day=event.ends_at.day,
+            tzinfo=event_tzinfo,
+        )
+
+        # find intersection between these two dates
+        start = max(query_start, event_start)
+        end = min(query_end, event_end)
+
+        # a valid intersection wasn't found
+        if start > end:
+            return {
+                "timezone": timezone,
+                "days": [],
+            }
+
+        num_days = (end - start).days + 1
 
         date_list = [start + timedelta(days=x) for x in range(num_days)]
 
@@ -60,6 +91,8 @@ class CreateCalenderUsecase:
             day_name = dt.strftime("%a").lower()
             intervals = availability_by_day.get(day_name, [])
 
+            print(intervals, day_name, dt)
+
             total_durations = []
 
             for interval in intervals:
@@ -69,7 +102,9 @@ class CreateCalenderUsecase:
                 start_dt = dt.replace(hour=start.hour, minute=start.minute)
                 end_dt = dt.replace(hour=end.hour, minute=end.minute)
 
-                total_durations += generate_time_range(start_dt, end_dt, 30, timezone)
+                total_durations += generate_time_range(
+                    start_dt, end_dt, event.duration, query_tzinfo
+                )
 
             spots = [
                 {
@@ -81,7 +116,7 @@ class CreateCalenderUsecase:
 
             calendar.append(
                 {
-                    "date": dt,
+                    "date": dt.date(),
                     "spots": spots,
                 }
             )
@@ -101,26 +136,15 @@ def get_day_name(dt: datetime) -> str:
     return dt.strftime("%A")
 
 
-# change hour of a datetime
-def change_time(
-    dt: datetime,
-    hour: int,
-    minute: int,
-    tz: str,
-) -> datetime:
-    tzinfo = ZoneInfo(tz)
-    return dt.replace(hour=hour, minute=minute).astimezone(tzinfo)
-
-
 def generate_time_range(
     start: datetime,
     end: datetime,
     duration: int,
-    tz: str,
+    tz: ZoneInfo,
 ) -> List[datetime]:
     times = []
     current = start
     while current < end:
-        times.append(current.astimezone(ZoneInfo(tz)))
+        times.append(current.astimezone(tz))
         current += timedelta(minutes=duration)
     return times

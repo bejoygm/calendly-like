@@ -1,7 +1,7 @@
 from datetime import date
 from uuid import UUID
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Query, status
 
 from src.database import DBSessionDep
 from src.schedule.data.repos.availability import AvailabilityRepoImpl
@@ -13,6 +13,7 @@ from src.schedule.domain.schemas.event import (
     GetEventCalendar,
 )
 from src.schedule.domain.usecase.get_calendar import CreateCalenderUsecase
+from src.schedule.routes.v1.exceptions import AvailabilityNotFound
 
 router = APIRouter(
     prefix="/events",
@@ -29,6 +30,12 @@ def create_event(
     payload: CreateEventSchema,
     db_session: DBSessionDep,
 ):
+    availability_repo = AvailabilityRepoImpl(db_session)
+    availability = availability_repo.get(payload.availability_id)
+
+    if not availability:
+        raise AvailabilityNotFound
+
     repo = EventRepoImpl(db_session)
     obj = Event(**payload.model_dump())
     event = repo.insert(obj)
@@ -43,9 +50,9 @@ def create_event(
 def get_event_calendar(
     db_session: DBSessionDep,
     event_id: UUID,
-    start_date: date,
-    end_date: date,
     timezone: str,
+    start_date: date = Query(..., description="eg: 2024-06-25"),
+    end_date: date = Query(..., description="eg: 2024-06-26"),
 ):
     event_repo = EventRepoImpl(db_session)
     availability_repo = AvailabilityRepoImpl(db_session)

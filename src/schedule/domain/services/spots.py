@@ -1,45 +1,27 @@
-from datetime import date, datetime, timedelta
 from typing import List
-from uuid import UUID
 from zoneinfo import ZoneInfo
-
+from src.schedule.domain.models.availability import Availability
+from src.schedule.domain.models.event import Event
+from datetime import date, datetime, timedelta
 from src.schedule.domain.models.event import SpotAvailability
-from src.schedule.domain.repos.availability import AvailabilityRepo
-from src.schedule.domain.repos.event import EventRepo
 
 
-class CreateCalenderUsecase:
-    def __init__(
+class SpotsService:
+    def __init__(self, availability: Availability, event: Event):
+        self.availability = availability
+        self.event = event
+
+    def generate_spots(
         self,
-        availability_repo: AvailabilityRepo,
-        event_repo: EventRepo,
-    ):
-        self.availability_repo = availability_repo
-        self.event_repo = event_repo
-
-    def execute(
-        self,
-        event_id: UUID,
         start_date: date,
         end_date: date,
         timezone: str,
     ):
-        event = self.event_repo.get(id=event_id)
-
-        if not event:
-            raise AssertionError
-
-        availability = self.availability_repo.get(id=event.availability_id)
-
-        if not availability:
-            raise AssertionError
-
-        # convert the start_date, end_date to the timezone of the event
-        # find the intersection between events window and query window
-        # then generate all durations
-        # then convert back to users timezone
-
-        event_tzinfo = ZoneInfo(availability.timezone)
+        # 1. convert the start_date, end_date to the timezone of the event
+        # 2. find the intersection between events window and query window
+        # 3. generate spots for a given date
+        # 4. convert spot duration back to query timezone
+        event_tzinfo = ZoneInfo(self.availability.timezone)
         query_tzinfo = ZoneInfo(timezone)
 
         query_start = datetime(
@@ -56,16 +38,16 @@ class CreateCalenderUsecase:
         )
 
         event_start = datetime(
-            year=event.starts_from.year,
-            month=event.starts_from.month,
-            day=event.starts_from.day,
+            year=self.event.starts_from.year,
+            month=self.event.starts_from.month,
+            day=self.event.starts_from.day,
             tzinfo=event_tzinfo,
         )
 
         event_end = datetime(
-            year=event.ends_at.year,
-            month=event.ends_at.month,
-            day=event.ends_at.day,
+            year=self.event.ends_at.year,
+            month=self.event.ends_at.month,
+            day=self.event.ends_at.day,
             tzinfo=event_tzinfo,
         )
 
@@ -84,26 +66,26 @@ class CreateCalenderUsecase:
 
         date_list = [start + timedelta(days=x) for x in range(num_days)]
 
-        availability_by_day = {a["day"]: a["intervals"] for a in availability.rules}
+        availability_by_day = {
+            a["day"]: a["intervals"] for a in self.availability.rules
+        }
 
         calendar = []
         for dt in date_list:
             day_name = dt.strftime("%a").lower()
             intervals = availability_by_day.get(day_name, [])
 
-            print(intervals, day_name, dt)
-
             total_durations = []
 
             for interval in intervals:
-                start = parse_time(interval["from"])
-                end = parse_time(interval["to"])
+                start = _parse_time(interval["from"])
+                end = _parse_time(interval["to"])
 
                 start_dt = dt.replace(hour=start.hour, minute=start.minute)
                 end_dt = dt.replace(hour=end.hour, minute=end.minute)
 
-                total_durations += generate_time_range(
-                    start_dt, end_dt, event.duration, query_tzinfo
+                total_durations += _generate_time_range(
+                    start_dt, end_dt, self.event.duration, query_tzinfo
                 )
 
             spots = [
@@ -127,16 +109,7 @@ class CreateCalenderUsecase:
         }
 
 
-def parse_time(time: str) -> datetime:
-    return datetime.strptime(time, "%H:%M")
-
-
-# function to get day name for a datetime object
-def get_day_name(dt: datetime) -> str:
-    return dt.strftime("%A")
-
-
-def generate_time_range(
+def _generate_time_range(
     start: datetime,
     end: datetime,
     duration: int,
@@ -148,3 +121,7 @@ def generate_time_range(
         times.append(current.astimezone(tz))
         current += timedelta(minutes=duration)
     return times
+
+
+def _parse_time(time: str) -> datetime:
+    return datetime.strptime(time, "%H:%M")

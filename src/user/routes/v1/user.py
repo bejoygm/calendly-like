@@ -6,7 +6,7 @@ from src.database import DBSessionDep
 from src.user.data.repos.user import UserRepoImpl
 from src.user.domain.models.user import User
 from src.user.domain.schemas.user import CreateUserSchema, GetUserSchema
-from src.user.domain.usecase.create_user import CreateUserUsecase
+from src.user.domain.usecases.create_user import CreateUserUsecase
 from src.user.routes.v1.exceptions import UserNotFound
 
 router = APIRouter(

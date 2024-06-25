@@ -140,3 +140,15 @@ def test_event_calendar_for_different_timezones(client, user):
     # and it should start at from 5:00
     start_time = datetime.strptime(spots[0]["start_time"], '%Y-%m-%dT%H:%M:%S%z')
     assert (start_time.hour, start_time.minute) == (5, 0)
+    
+def test_event_calendar_when_there_is_no_overlap(client, event: Event):
+    calendar = client.get(
+        f"/events/{event.id}/calendar",
+        params={
+            "start_date": "2100-06-23",
+            "end_date": "2100-06-30",
+            "timezone": "America/New_York",
+        },
+    ).json()
+    
+    assert len(calendar["days"]) == 0

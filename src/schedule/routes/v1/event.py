@@ -12,7 +12,7 @@ from src.schedule.domain.schemas.event import (
     CreateEventSchema,
     GetEventCalendar,
 )
-from src.schedule.domain.usecase.get_calendar import CreateCalenderUsecase
+from src.schedule.domain.usecases.get_calendar import GetCalenderUsecase
 from src.schedule.routes.v1.exceptions import AvailabilityNotFound
 
 router = APIRouter(
@@ -57,7 +57,7 @@ def get_event_calendar(
     event_repo = EventRepoImpl(db_session)
     availability_repo = AvailabilityRepoImpl(db_session)
 
-    usecase = CreateCalenderUsecase(
+    usecase = GetCalenderUsecase(
         availability_repo=availability_repo,
         event_repo=event_repo,
     )
@@ -69,5 +69,4 @@ def get_event_calendar(
         timezone=timezone,
     )
 
-    return_payload = calender_events
-    return return_payload
+    return calender_events

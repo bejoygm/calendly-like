@@ -8,7 +8,7 @@ from src.schedule.domain.schemas.availability import (
     AvailabilityRequestSchema,
     AvailabilityResponseSchema,
 )
-from src.schedule.domain.usecase.create_availablility import CreateAvailabilityUsecase
+from src.schedule.domain.usecases.create_availablility import CreateAvailabilityUsecase
 from src.schedule.routes.v1.exceptions import AvailabilityNotFound, UserNotFound
 from src.user.data.repos.user import UserRepoImpl
 

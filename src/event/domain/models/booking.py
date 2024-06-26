@@ -1,7 +1,6 @@
 import uuid
-from typing import List
 
-from pydantic import BaseModel, Field, AwareDatetime
+from pydantic import AwareDatetime, BaseModel, Field
 
 
 class Booking(BaseModel):

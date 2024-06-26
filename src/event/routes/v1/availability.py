@@ -1,5 +1,6 @@
 from uuid import UUID
-from fastapi import APIRouter, Response, status
+
+from fastapi import APIRouter, status
 
 from src.database import DBSessionDep
 from src.event.data.repos.availability import AvailabilityRepoImpl

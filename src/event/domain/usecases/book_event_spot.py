@@ -1,10 +1,11 @@
 import base64
-from datetime import date, timedelta
+from datetime import timedelta
 from uuid import UUID
 from zoneinfo import ZoneInfo
 
-from pydantic import AwareDatetime
 from ics import Calendar, Event
+from pydantic import AwareDatetime
+
 from src.event.domain.models.booking import Booking
 from src.event.domain.repos.availability import AvailabilityRepo
 from src.event.domain.repos.booking import BookingRepo

@@ -1,8 +1,8 @@
 # https://github.com/sendgrid/sendgrid-python
-from typing import List
-from src.config import settings
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType
+from sendgrid.helpers.mail import Attachment, FileContent, FileName, FileType, Mail
+
+from src.config import settings
 
 
 def send(ics: str, to_emails: str, subject: str, content: str):

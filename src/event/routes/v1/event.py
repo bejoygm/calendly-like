@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date
 from uuid import UUID
 
 from fastapi import APIRouter, Query, status
@@ -15,8 +15,8 @@ from src.event.domain.schemas.event import (
     CreateEventSchema,
     GetEventCalendar,
 )
-from src.event.domain.usecases.get_calendar import GetCalenderUsecase
 from src.event.domain.usecases.book_event_spot import BookEventSpotUsecase
+from src.event.domain.usecases.get_calendar import GetCalenderUsecase
 from src.event.routes.v1.exceptions import AvailabilityNotFound
 from src.user.data.repos.user import UserRepoImpl
 

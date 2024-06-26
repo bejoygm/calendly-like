@@ -1,12 +1,12 @@
+from datetime import date, datetime, timedelta
 from typing import List
 from uuid import UUID
 from zoneinfo import ZoneInfo
 
 from pydantic import AwareDatetime
+
 from src.event.domain.models.availability import Availability
-from src.event.domain.models.event import Event
-from datetime import date, datetime, timedelta
-from src.event.domain.models.event import SpotAvailability
+from src.event.domain.models.event import Event, SpotAvailability
 
 
 class SpotsService:

@@ -1,8 +1,8 @@
 from typing import List
 from uuid import UUID
 
-from sqlalchemy.orm import Session
 from sqlalchemy import or_
+from sqlalchemy.orm import Session
 
 from src.event.data.models.booking import BookingModel
 from src.event.domain.models.booking import Booking

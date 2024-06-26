@@ -1,8 +1,8 @@
-from datetime import date, datetime
+from datetime import date
 from typing import List
 from uuid import UUID
 
-from pydantic import BaseModel, Field, field_validator, AwareDatetime
+from pydantic import AwareDatetime, BaseModel, Field, field_validator
 from pydantic_core.core_schema import ValidationInfo
 
 from src.event.domain.models.event import SpotAvailability

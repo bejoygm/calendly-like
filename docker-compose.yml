@@ -13,5 +13,3 @@ services:
       - "5432:5432"
 volumes:
   app_db_data:
-    driver: "local"
-  test-db-data:

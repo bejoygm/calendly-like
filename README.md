@@ -1,5 +1,23 @@
 ## Calendly Like APIs
-The docs are available at `/docs` once the application is running
+This project is an API implmentation to support some of the features provided by a calendar blocking app.
+
+The API docs are available at `/docs` once the application is running
+
+Support for
+- Availablity templates for event creators
+- Support for multiple events
+- Overlap for available spots between two users
+- Timezone support
+- Email invites after blocking the calendar
+
+### Some notes of architecture
+This project mostly follows [clean architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) except gateway implmentation for email service. This is done for a faster local testing, but should be updated later on.
+
+Dependency injection is done manually throughout the project. It would be a nice addition to setup some auto-wiring with [lagom](https://lagom-di.readthedocs.io/en/latest/) in future.
+
+Doesn't have yet:
+- Request level idempotency support
+- different DB isolation levels on demand per session  
 
 
 ## Local Development

@@ -18,6 +18,7 @@ from src.event.domain.schemas.event import (
 from src.event.domain.usecases.get_calendar import GetCalenderUsecase
 from src.event.domain.usecases.book_event_spot import BookEventSpotUsecase
 from src.event.routes.v1.exceptions import AvailabilityNotFound
+from src.user.data.repos.user import UserRepoImpl
 
 router = APIRouter(
     prefix="/events",
@@ -92,8 +93,14 @@ def book_event_spot(
     availability_repo = AvailabilityRepoImpl(db_session)
     event_repo = EventRepoImpl(db_session)
     booking_repo = BookingRepoImpl(db_session)
+    user_repo = UserRepoImpl(db_session)
 
-    usecase = BookEventSpotUsecase(availability_repo, event_repo, booking_repo)
+    usecase = BookEventSpotUsecase(
+        availability_repo,
+        event_repo,
+        booking_repo,
+        user_repo,
+    )
     response = usecase.execute(
         event_id,
         spot=payload.spot,

@@ -1,9 +1,10 @@
-from datetime import date
+import base64
+from datetime import date, timedelta
 from uuid import UUID
 from zoneinfo import ZoneInfo
 
 from pydantic import AwareDatetime
-
+from ics import Calendar, Event
 from src.event.domain.models.booking import Booking
 from src.event.domain.repos.availability import AvailabilityRepo
 from src.event.domain.repos.booking import BookingRepo
@@ -14,7 +15,10 @@ from src.event.routes.v1.exceptions import (
     AvailabilityNotFound,
     BookingNotAllowed,
     EventNotFound,
+    UserNotFound,
 )
+from src.user.domain.models.user import User
+from src.user.domain.repos.user import UserRepo
 
 
 class BookEventSpotUsecase:
@@ -23,10 +27,12 @@ class BookEventSpotUsecase:
         availability_repo: AvailabilityRepo,
         event_repo: EventRepo,
         booking_repo: BookingRepo,
+        user_repo: UserRepo,
     ):
         self.availability_repo = availability_repo
         self.event_repo = event_repo
         self.booking_repo = booking_repo
+        self.user_repo = user_repo
 
     def execute(
         self,
@@ -35,6 +41,10 @@ class BookEventSpotUsecase:
         timezone: str,
         booked_by_id: UUID,
     ):
+        booking_user = self.user_repo.get(booked_by_id)
+        if not booking_user:
+            raise UserNotFound
+
         event = self.event_repo.get(id=event_id)
 
         if not event:
@@ -44,6 +54,10 @@ class BookEventSpotUsecase:
 
         if not availability:
             raise AvailabilityNotFound
+
+        event_user = self.user_repo.get(availability.user_id)
+        if not event_user:
+            raise UserNotFound
 
         service = SpotsService(availability, event)
         spot_date = spot.date()
@@ -69,8 +83,9 @@ class BookEventSpotUsecase:
 
         self.booking_repo.insert(booking)
 
-        # hack: should be pushed off to a queue
-        # send()
+        # hack: this is a sync call
+        # ideally it should be pushed off to a queue with idempotency support
+        send_invites(event, booking, booking_user, event_user)
 
         return booking
 
@@ -81,3 +96,27 @@ def check_spot_availability(spot, spots):
             if s["start_time"] == spot:
                 return True
     return False
+
+
+def send_invites(event: Event, booking: Booking, booking_user: User, event_user: User):
+    ics = generate_ics(event, booking)
+    booking_subject = f"You are invited for {event.name}"
+    content = f"Meeting details\n{event.description}"
+    send(ics, booking_user.email, booking_subject, content)
+
+    event_subject = f"{booking_user.name} blocked your calendar"
+    send(ics, event_user.email, event_subject, content)
+
+
+def generate_ics(event: Event, booking: Booking):
+    c = Calendar()
+    e = Event()
+    e.name = event.name
+    e.summary = event.name
+    e.description = event.description
+    e.begin = booking.spot
+    e.end = booking.spot + timedelta(minutes=event.duration)
+    c.events.add(e)
+
+    ics = c.serialize()
+    return base64.b64encode(ics.encode()).decode()

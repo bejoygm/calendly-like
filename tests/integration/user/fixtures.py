@@ -7,19 +7,19 @@ User = namedtuple("User", ["id", "name", "email"])
 
 @pytest.fixture
 def user(client) -> User:
-    email = "abc@example.com"
+    email = "bejoygm@gmail.com"
     response = client.post(
         "/users/",
-        json={"email": email, "name": "abc"},
+        json={"email": email, "name": "Event creator"},
     )
     return User(**response.json())
 
 
 @pytest.fixture
 def booking_user(client) -> User:
-    email = "booking_user@example.com"
+    email = "bejoyrock@gmail.com"
     response = client.post(
         "/users/",
-        json={"email": email, "name": "booking_user"},
+        json={"email": email, "name": "Booking user"},
     )
     return User(**response.json())

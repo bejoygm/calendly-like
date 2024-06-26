@@ -8,8 +8,9 @@ from src.database import Base
 
 ### import all models here
 from src.user.data.models.user import User
-from src.schedule.data.models.availability import AvailabilityModel
-from src.schedule.data.models.event import EventModel
+from src.event.data.models.availability import AvailabilityModel
+from src.event.data.models.event import EventModel
+from src.event.data.models.booking import BookingModel
 
 ###
 

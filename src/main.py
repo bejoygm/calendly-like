@@ -3,14 +3,13 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from src.config import app_configs, settings
-from src.schedule.routes.v1 import availability, event, schedule
+from src.event.routes.v1 import availability, event
 from src.user.routes.v1 import user
 
 app = FastAPI(**app_configs)
 app.include_router(user.router)
 app.include_router(availability.router)
 app.include_router(event.router)
-app.include_router(schedule.router)
 
 app.add_middleware(
     CORSMiddleware,

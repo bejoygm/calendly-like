@@ -13,3 +13,13 @@ def user(client) -> User:
         json={"email": email, "name": "abc"},
     )
     return User(**response.json())
+
+
+@pytest.fixture
+def booking_user(client) -> User:
+    email = "booking_user@example.com"
+    response = client.post(
+        "/users/",
+        json={"email": email, "name": "booking_user"},
+    )
+    return User(**response.json())

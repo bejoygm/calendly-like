@@ -8,7 +8,7 @@ from sqlalchemy.pool import StaticPool
 from src.database import Base, get_db_session
 from src.main import app
 from tests.integration.user.fixtures import *
-from tests.integration.schedule.fixtures import *
+from tests.integration.event.fixtures import *
 
 # create objects in memory for fast tests
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"

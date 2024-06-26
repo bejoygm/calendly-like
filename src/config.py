@@ -23,6 +23,8 @@ class Config(CustomBaseSettings):
 
     SENTRY_DSN: str | None = None
 
+    SENDGRID_API_KEY: str | None = None
+
     CORS_ORIGINS: list[str] = ["*"]
     CORS_ORIGINS_REGEX: str | None = None
     CORS_HEADERS: list[str] = ["*"]

@@ -13,9 +13,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     POETRY_NO_INTERACTION=1 \
     POETRY_VIRTUALENVS_CREATE=false \
     POETRY_CACHE_DIR='/var/cache/pypoetry' \
-    POETRY_HOME='/usr/local' \
-    # app
-    PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus_multiproc_dir
+    POETRY_HOME='/usr/local'
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
@@ -41,8 +39,6 @@ COPY . .
 
 RUN useradd -m -d /src -s /bin/bash app \
     && chown -R app:app /src/* && chown -R app:app /src \
-    && chmod +x entrypoints/* \
-    && rm -rf /tmp/prometheus_multiproc_dir && mkdir -p /tmp/prometheus_multiproc_dir \
-    && chown -R app:app /tmp/prometheus_multiproc_dir
+    && chmod +x entrypoints/*
 
 USER app

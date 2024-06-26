@@ -21,6 +21,9 @@ sqlalchemy = {extras = ["asyncio"], version = "^2.0.30"}
 mypy = "^1.10.0"
 pytest = "^8.2.2"
 aiosqlite = "^0.20.0"
+tzdata = "^2024.1"
+sendgrid = "^6.11.0"
+ics = "^0.7.2"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.8"

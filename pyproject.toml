@@ -36,3 +36,6 @@ prometheus-client = "^0.20.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+exclude = ["alembic", "tests"]
